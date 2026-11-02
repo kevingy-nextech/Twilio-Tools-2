@@ -9,6 +9,20 @@ You can think of these scripts as a pipeline:
 - `countcps.py` takes the CDRs and and produces counts of calls per second; and 
 - `analyzecps.py` takes the CPS counts and models call queuing at a given CPS.
 
+The companion `getsms.py` script downloads Twilio SMS message records to a CSV file. Its date range
+uses the messages' sent time, and it supports the same account, subaccount, and field-selection
+options as `getcdrs.py`:
+
+```
+python getsms.py messages.csv --start "2025-01-01" --end "2025-02-01"
+```
+
+To select specific fields, for example:
+
+```
+python getsms.py messages.csv --fields=sid,date_sent,from,to,body,status
+```
+
 ## Installation
 Python 3.14 is the supported runtime. In your project directory, create and activate a virtual environment:
 ```
