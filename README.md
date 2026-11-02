@@ -10,15 +10,31 @@ You can think of these scripts as a pipeline:
 - `analyzecps.py` takes the CPS counts and models call queuing at a given CPS.
 
 ## Installation
-If you're using a [Virtual Environment](https://realpython.com/python-virtual-environments-a-primer/), do the following in your project directory:
+Python 3.14 is the supported runtime. In your project directory, create and activate a virtual environment:
 ```
-python3 -m venv ENV
-source ENV/bin/activate
+python -m venv .venv
+```
+In PowerShell, activate it with:
+```
+.\.venv\Scripts\Activate.ps1
+```
+In Command Prompt, activate it with:
+```
+.venv\Scripts\activate.bat
+```
+On macOS or Linux, activate it with:
+```
+source .venv/bin/activate
 ```
 Next, install the required Python libraries (`twilio`, `numpy` and `matplotlib`):
 ```
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
+On Windows, run a script through the virtual environment's interpreter, for example:
+```
+.\.venv\Scripts\python.exe .\analyzecps.py --help
+```
+Avoid launching `.py` files directly, because Windows may associate them with a different Python installation.
 
 ## getcdrs.py
 This script can be used to download the call records for an account, or a master account and its subaccounts, for a given period.  You can opt to get all the fields of a call, or you can be selective as to which are included in the output CSV file.

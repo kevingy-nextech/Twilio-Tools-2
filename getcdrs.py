@@ -198,11 +198,11 @@ def main(args):
         writer = csv.writer(cdr_file, args.fields)
         writer.writerow(args.fields)
         
-        # Special case because 'from' is a reserved word in Python; must use 'from_' instead.
-        pythonic_fields = ['from_' if field == 'from' else field for field in args.fields]
+        # Twilio exposes the reserved "from" response field as "_from".
+        sdk_fields = ['_from' if field == 'from' else field for field in args.fields]
 
         for call in calls(args):
-            cdr = [getattr(call, field) for field in pythonic_fields]
+            cdr = [getattr(call, field, None) for field in sdk_fields]
             writer.writerow(cdr)
 
     logger.debug("Finished writing CDRs")

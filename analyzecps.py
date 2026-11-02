@@ -33,7 +33,7 @@ YYYY-MM-DD HH:MM:SS, without a timezone offset, separated from the count by a co
 
 import sys
 import argparse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import logging
 import csv
 import numpy as np
@@ -82,6 +82,12 @@ def get_args():
 # Return the number of seconds in a timedelta.
 def num_seconds(delta):
     return delta.days * 86400 + delta.seconds
+
+
+def normalize_datetime(dt):
+    if dt.tzinfo is None:
+        return dt
+    return dt.astimezone(timezone.utc).replace(tzinfo=None)
 
 
 # At the start of the period, the queue size is assumed to be zero.  For each second,
@@ -153,6 +159,9 @@ def main(args):
     configure_logging(level=getattr(logging, args.log.upper()))
     logger.debug("Reading CPS file into memory...")
 
+    args.start = normalize_datetime(args.start) if args.start else None
+    args.end = normalize_datetime(args.end) if args.end else None
+
     num_read = 0
     intervals = []  # Each entry is a (datetime, int) tuple
     earliest = datetime.max 
@@ -162,7 +171,7 @@ def main(args):
         cps_lines = csv.DictReader(cps_file, fieldnames=['dt', 'cps'])
         for cps_line in cps_lines:
             num_read += 1
-            dt = datetime.fromisoformat(cps_line['dt'])
+            dt = normalize_datetime(datetime.fromisoformat(cps_line['dt']))
 
             # Filter records outside of the chosen period.
             if args.start and dt < args.start: continue
